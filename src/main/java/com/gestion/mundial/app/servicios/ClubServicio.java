@@ -18,9 +18,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
  
+/**
+ * Lógica de negocio de clubes. La usan tanto las vistas Thymeleaf
+ * como la API REST, así las reglas son las mismas en ambos lados.
+ */
 @Service
 @RequiredArgsConstructor
 public class ClubServicio {
+ 
+    public static final int MAXIMO_JUGADORES = 26;
  
     private final ClubRepositorio clubRepositorio;
     private final AsociacionRepositorio asociacionRepositorio;
@@ -41,6 +47,21 @@ public class ClubServicio {
                         HttpStatus.NOT_FOUND, "No existe un club con id " + id));
     }
  
+    /** Clubes afiliados a una asociación. */
+    public List<Club> listarPorAsociacion(String asociacionId) {
+        return clubRepositorio.findAllByOrderByNombreAsc().stream()
+                .filter(c -> c.getAsociacion() != null && asociacionId.equals(c.getAsociacion().getId()))
+                .toList();
+    }
+ 
+    /** Clubes inscritos en una competición. */
+    public List<Club> listarPorCompeticion(String competicionId) {
+        return clubRepositorio.findAllByOrderByNombreAsc().stream()
+                .filter(c -> c.getCompeticiones() != null && c.getCompeticiones().stream()
+                        .anyMatch(comp -> comp != null && competicionId.equals(comp.getId())))
+                .toList();
+    }
+ 
     public List<Asociacion> listarAsociaciones() {
         return asociacionRepositorio.findAllByOrderByNombreAsc();
     }
@@ -55,40 +76,59 @@ public class ClubServicio {
                 .sum();
     }
  
-    // ---------- Escritura ----------
+    // ---------- Crear (POST) ----------
  
-    /**
-     * Crea un club. Recibe los IDs de asociación y competiciones por separado
-     * porque en Mongo esas relaciones son referencias a otras colecciones.
-     */
-    public Club guardar(Club club, String asociacionId, List<String> competicionIds) {
+    public Club crear(Club club, String asociacionId, List<String> competicionIds) {
         club.setId(null);                              // siempre es un alta: nunca sobrescribir otro club
         club.setNombre(club.getNombre().trim());
  
         if (clubRepositorio.existsByNombreIgnoreCase(club.getNombre())) {
             throw new ReglaNegocioException("nombre", "Ya existe un club llamado " + club.getNombre());
         }
- 
-        // Quitar filas vacías que pudieran llegar del formulario
-        List<Jugador> jugadores = club.getJugadores() == null ? new ArrayList<>()
-                : new ArrayList<>(club.getJugadores().stream().filter(Objects::nonNull).toList());
-        club.setJugadores(jugadores);
-        validarDorsales(jugadores);
- 
-        club.setAsociacion(resolverAsociacion(asociacionId));
-        club.setCompeticiones(resolverCompeticiones(competicionIds));
- 
+        prepararYValidar(club, asociacionId, competicionIds);
         return clubRepositorio.save(club);
     }
  
+    // ---------- Actualizar (PUT) ----------
+ 
+    /** Reemplaza todos los datos del club, incluida su plantilla embebida. */
+    public Club actualizar(String id, Club datos, String asociacionId, List<String> competicionIds) {
+        buscarPorId(id);                               // 404 si el club no existe
+        datos.setId(id);                               // el id lo define la URL, no el cuerpo
+        datos.setNombre(datos.getNombre().trim());
+ 
+        if (clubRepositorio.existsByNombreIgnoreCaseAndIdNot(datos.getNombre(), id)) {
+            throw new ReglaNegocioException("nombre", "Ya existe otro club llamado " + datos.getNombre());
+        }
+        prepararYValidar(datos, asociacionId, competicionIds);
+        return clubRepositorio.save(datos);            // save con id existente = actualización
+    }
+ 
+    // ---------- Eliminar (DELETE) ----------
+ 
     public void eliminar(String id) {
         Club club = buscarPorId(id);
-        // Jugadores y entrenador están embebidos: se borran junto con el club (como un CASCADE).
+        // Entrenador y jugadores están embebidos: se borran junto con el club (como un CASCADE).
         // Asociación y competiciones son referencias: NO se borran.
         clubRepositorio.delete(club);
     }
  
     // ---------- Reglas internas ----------
+ 
+    /** Lógica común de POST y PUT: limpia la plantilla, valida dorsales y resuelve referencias. */
+    private void prepararYValidar(Club club, String asociacionId, List<String> competicionIds) {
+        List<Jugador> jugadores = club.getJugadores() == null ? new ArrayList<>()
+                : new ArrayList<>(club.getJugadores().stream().filter(Objects::nonNull).toList());
+        if (jugadores.size() > MAXIMO_JUGADORES) {
+            throw new ReglaNegocioException("jugadores",
+                    "Una plantilla admite máximo " + MAXIMO_JUGADORES + " jugadores");
+        }
+        club.setJugadores(jugadores);
+        validarDorsales(jugadores);
+ 
+        club.setAsociacion(resolverAsociacion(asociacionId));
+        club.setCompeticiones(resolverCompeticiones(competicionIds));
+    }
  
     private void validarDorsales(List<Jugador> jugadores) {
         Set<Integer> usados = new HashSet<>();
@@ -110,7 +150,9 @@ public class ClubServicio {
     }
  
     private List<Competicion> resolverCompeticiones(List<String> ids) {
-        if (ids == null || ids.isEmpty()) return new ArrayList<>();
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
         List<Competicion> encontradas = new ArrayList<>(competicionRepositorio.findAllById(ids));
         if (encontradas.size() != new HashSet<>(ids).size()) {
             throw new ReglaNegocioException("competiciones", "Alguna competición seleccionada no existe");

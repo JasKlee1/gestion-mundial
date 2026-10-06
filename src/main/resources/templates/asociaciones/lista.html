@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{base :: head('Asociaciones')}"></head>
+<body>
+<header th:replace="~{base :: cabecera}"></header>
+<div th:replace="~{base :: avisos}"></div>
+ 
+<main class="container catalogo">
+    <h1 class="catalogo-titulo">Asociaciones</h1>
+    <p class="catalogo-entradilla">Las federaciones a las que se afilian los clubes. Una asociación con clubes afiliados no se puede eliminar.</p>
+ 
+    <div class="row g-4 align-items-start">
+        <!-- Formulario: alta o edición -->
+        <div class="col-lg-5">
+            <section class="bloque">
+                <h2 class="bloque-titulo" th:text="${asociacion.id == null ? 'Nueva asociación' : 'Editar asociación'}">Nueva asociación</h2>
+                <form th:action="${asociacion.id == null} ? @{/asociaciones/guardar} : @{/asociaciones/{id}/actualizar(id=${asociacion.id})}"
+                      th:object="${asociacion}" method="post" novalidate class="vstack gap-3">
+                    <div th:if="${#fields.hasGlobalErrors()}" class="text-danger" th:errors="*{global}"></div>
+                    <div>
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" th:field="*{nombre}" class="form-control" th:errorclass="is-invalid" maxlength="80"
+                               placeholder="Ej. Federación Colombiana de Fútbol">
+                        <div class="invalid-feedback" th:errors="*{nombre}"></div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-5">
+                            <label for="siglas" class="form-label">Siglas</label>
+                            <input type="text" th:field="*{siglas}" class="form-control" th:errorclass="is-invalid" maxlength="10"
+                                   placeholder="Ej. FCF">
+                            <div class="invalid-feedback" th:errors="*{siglas}"></div>
+                        </div>
+                        <div class="col-7">
+                            <label for="pais" class="form-label">País</label>
+                            <input type="text" th:field="*{pais}" class="form-control" th:errorclass="is-invalid" maxlength="40">
+                            <div class="invalid-feedback" th:errors="*{pais}"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="presidente" class="form-label">Presidente <span class="nota-suave">(opcional)</span></label>
+                        <input type="text" th:field="*{presidente}" class="form-control" th:errorclass="is-invalid" maxlength="60">
+                        <div class="invalid-feedback" th:errors="*{presidente}"></div>
+                    </div>
+                    <div class="redaccion-acciones">
+                        <button type="submit" class="btn btn-azul"
+                                th:text="${asociacion.id == null ? 'Guardar asociación' : 'Guardar cambios'}">Guardar asociación</button>
+                        <a th:if="${asociacion.id != null}" th:href="@{/asociaciones}" class="volver">Cancelar</a>
+                    </div>
+                </form>
+            </section>
+        </div>
+ 
+        <!-- Índice de asociaciones -->
+        <div class="col-lg-7">
+            <ul class="indice">
+                <li th:if="${#lists.isEmpty(asociaciones)}" class="indice-vacio">Todavía no hay asociaciones registradas.</li>
+                <li th:each="a : ${asociaciones}">
+                    <span class="indice-grande" th:text="${a.siglas}">FCF</span>
+                    <div>
+                        <p class="indice-nombre" th:text="${a.nombre}">Federación Colombiana de Fútbol</p>
+                        <p class="indice-meta">
+                            <span th:text="${a.pais}">Colombia</span><th:block th:if="${a.presidente != null}">. Presidente: <span th:text="${a.presidente}">Nombre</span></th:block>
+                        </p>
+                    </div>
+                    <div class="indice-acciones">
+                        <span class="etiqueta-conteo"
+                              th:with="n=${clubesPorAsociacion.getOrDefault(a.id, 0L)}"
+                              th:text="${n == 1} ? '1 club' : (${n} + ' clubes')">0 clubes</span>
+                        <a th:href="@{/asociaciones/{id}/editar(id=${a.id})}" class="enlace-editar">Editar</a>
+                        <form th:action="@{/asociaciones/{id}/eliminar(id=${a.id})}" method="post"
+                              onsubmit="return confirm('¿Eliminar esta asociación?');">
+                            <button type="submit" class="enlace-eliminar">Eliminar</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</main>
+ 
+<footer th:replace="~{base :: pie}"></footer>
+<th:block th:replace="~{base :: scripts}"></th:block>
+</body>
+</html>

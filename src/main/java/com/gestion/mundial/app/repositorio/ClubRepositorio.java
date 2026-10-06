@@ -15,4 +15,7 @@ public interface ClubRepositorio extends MongoRepository<Club, String> {
     List<Club> findByNombreContainingIgnoreCaseOrderByNombreAsc(String nombre);
  
     boolean existsByNombreIgnoreCase(String nombre);
+ 
+    // Para editar: verifica que el nombre no lo use OTRO club
+    boolean existsByNombreIgnoreCaseAndIdNot(String nombre, String id);
 }

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{base :: head('Competiciones')}"></head>
+<body>
+<header th:replace="~{base :: cabecera}"></header>
+<div th:replace="~{base :: avisos}"></div>
+ 
+<main class="container catalogo">
+    <h1 class="catalogo-titulo">Competiciones</h1>
+    <p class="catalogo-entradilla">Los torneos que juegan los clubes. Al eliminar una competición se retira de todos los clubes inscritos.</p>
+ 
+    <div class="row g-4 align-items-start">
+        <!-- Formulario: alta o edición -->
+        <div class="col-lg-5">
+            <section class="bloque">
+                <h2 class="bloque-titulo" th:text="${competicion.id == null ? 'Nueva competición' : 'Editar competición'}">Nueva competición</h2>
+                <form th:action="${competicion.id == null} ? @{/competiciones/guardar} : @{/competiciones/{id}/actualizar(id=${competicion.id})}"
+                      th:object="${competicion}" method="post" novalidate class="vstack gap-3">
+                    <div>
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" th:field="*{nombre}" class="form-control" th:errorclass="is-invalid" maxlength="60"
+                               placeholder="Ej. Copa Libertadores">
+                        <div class="invalid-feedback" th:errors="*{nombre}"></div>
+                    </div>
+                    <div>
+                        <label for="montoPremio" class="form-label">Premio en dólares</label>
+                        <input type="number" th:field="*{montoPremio}" class="form-control" th:errorclass="is-invalid" min="0" step="1000">
+                        <div class="invalid-feedback" th:errors="*{montoPremio}"></div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label for="fechaInicio" class="form-label">Inicio</label>
+                            <input type="date" th:field="*{fechaInicio}" class="form-control" th:errorclass="is-invalid">
+                            <div class="invalid-feedback" th:errors="*{fechaInicio}"></div>
+                        </div>
+                        <div class="col-6">
+                            <label for="fechaFin" class="form-label">Fin</label>
+                            <input type="date" th:field="*{fechaFin}" class="form-control" th:errorclass="is-invalid">
+                            <div class="invalid-feedback" th:errors="*{fechaFin}"></div>
+                        </div>
+                    </div>
+                    <div class="redaccion-acciones">
+                        <button type="submit" class="btn btn-azul"
+                                th:text="${competicion.id == null ? 'Guardar competición' : 'Guardar cambios'}">Guardar competición</button>
+                        <a th:if="${competicion.id != null}" th:href="@{/competiciones}" class="volver">Cancelar</a>
+                    </div>
+                </form>
+            </section>
+        </div>
+ 
+        <!-- Índice de competiciones -->
+        <div class="col-lg-7">
+            <ul class="indice">
+                <li th:if="${#lists.isEmpty(competiciones)}" class="indice-vacio">Todavía no hay competiciones registradas.</li>
+                <li th:each="c : ${competiciones}">
+                    <span class="indice-grande" th:text="${c.fechaInicio != null} ? ${c.fechaInicio.year} : '—'">2026</span>
+                    <div>
+                        <p class="indice-nombre" th:text="${c.nombre}">Copa Libertadores</p>
+                        <p class="indice-meta">
+                            Del <span th:text="${#temporals.format(c.fechaInicio, 'dd/MM/yyyy')}">03/02/2026</span>
+                            al <span th:text="${#temporals.format(c.fechaFin, 'dd/MM/yyyy')}">28/11/2026</span>.
+                            Premio: <span th:text="'$ ' + ${#numbers.formatInteger(c.montoPremio, 1, 'POINT')}">$ 20.000.000</span>
+                        </p>
+                    </div>
+                    <div class="indice-acciones">
+                        <span class="etiqueta-conteo"
+                              th:with="n=${clubesPorCompeticion.getOrDefault(c.id, 0L)}"
+                              th:text="${n == 1} ? '1 club' : (${n} + ' clubes')">0 clubes</span>
+                        <a th:href="@{/competiciones/{id}/editar(id=${c.id})}" class="enlace-editar">Editar</a>
+                        <form th:action="@{/competiciones/{id}/eliminar(id=${c.id})}" method="post"
+                              onsubmit="return confirm('¿Eliminar esta competición? Se retirará de los clubes inscritos.');">
+                            <button type="submit" class="enlace-eliminar">Eliminar</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</main>
+ 
+<footer th:replace="~{base :: pie}"></footer>
+<th:block th:replace="~{base :: scripts}"></th:block>
+</body>
+</html>

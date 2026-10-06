@@ -12,17 +12,17 @@
     --fondo: #EEF1F6;
     --linea: #C9D1DF;
     --gris: #55607A;
-
+ 
     --titular: "Archivo", "Arial Narrow", sans-serif;
     --lectura: "Newsreader", Georgia, "Times New Roman", serif;
-
+ 
     --bs-body-font-family: var(--lectura);
     --bs-body-color: var(--tinta);
     --bs-body-bg: var(--fondo);
 }
-
+ 
 body { background: var(--fondo); color: var(--tinta); font-family: var(--lectura); font-size: 1.0625rem; }
-
+ 
 /* Titulares: Archivo estrecho y muy grueso */
 h1, h2, h3, .titular {
     font-family: var(--titular);
@@ -33,22 +33,22 @@ h1, h2, h3, .titular {
     line-height: 0.95;
     text-wrap: balance;
 }
-
+ 
 /* Botones, etiquetas y formularios usan Archivo normal */
 .btn, .form-label, .form-control, .form-select, .contador, .antetitulo,
 .cabecera-enlace, .volver, .enlace-eliminar, .alineacion-posicion {
     font-family: var(--titular);
     font-stretch: 100%;
 }
-
+ 
 :focus-visible { outline: 3px solid var(--rojo); outline-offset: 2px; }
-
+ 
 /* ---------- Franja tricolor (proporciones de la bandera 2:1:1) ---------- */
 .franja-tricolor { display: flex; height: 7px; }
 .franja-tricolor span:nth-child(1) { flex: 2; background: var(--amarillo); }
 .franja-tricolor span:nth-child(2) { flex: 1; background: var(--azul); }
 .franja-tricolor span:nth-child(3) { flex: 1; background: var(--rojo); }
-
+ 
 /* ---------- Cabecera ---------- */
 .cabecera { background: var(--papel); }
 .cabecera-fila {
@@ -67,10 +67,10 @@ h1, h2, h3, .titular {
     letter-spacing: -0.02em;
 }
 .cabecera-marca:hover { color: var(--azul-hondo); }
-.cabecera-nav { display: flex; align-items: center; gap: 1.25rem; }
+.cabecera-nav { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.25rem; }
 .cabecera-enlace { color: var(--tinta); font-weight: 600; text-decoration: none; }
 .cabecera-enlace:hover, .cabecera-enlace.activo { color: var(--azul); text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; text-decoration-color: var(--amarillo); }
-
+ 
 /* ---------- Botones ---------- */
 .btn { font-weight: 700; border-radius: 4px; }
 .btn-azul { background: var(--azul); color: #fff; border: 0; }
@@ -81,7 +81,7 @@ h1, h2, h3, .titular {
 .btn-borde:hover { background: var(--azul); color: #fff; }
 .btn-quitar { border: 0; color: var(--gris); padding: .375rem .5rem; }
 .btn-quitar:hover { color: var(--rojo); }
-
+ 
 .enlace-eliminar {
     background: none; border: 0; padding: 0;
     color: var(--rojo); font-weight: 600; font-size: .9rem;
@@ -90,7 +90,7 @@ h1, h2, h3, .titular {
 .enlace-eliminar:hover { color: #9E0B1C; }
 .enlace-eliminar-claro { color: #fff; }
 .enlace-eliminar-claro:hover { color: var(--amarillo); }
-
+ 
 /* ---------- Linea de edicion ---------- */
 .edicion { background: var(--papel); border-bottom: 1px solid var(--linea); }
 .edicion-fila {
@@ -100,7 +100,7 @@ h1, h2, h3, .titular {
 }
 .edicion-texto { margin: 0; font-style: italic; color: var(--gris); max-width: 62ch; }
 .edicion-texto strong { font-style: normal; color: var(--tinta); }
-
+ 
 .buscador { display: flex; align-items: center; border-bottom: 2px solid var(--tinta); min-width: min(100%, 300px); }
 .buscador input {
     flex: 1; border: 0; background: transparent; padding: .35rem 0;
@@ -109,11 +109,11 @@ h1, h2, h3, .titular {
 .buscador input:focus { outline: none; }
 .buscador:focus-within { border-bottom-color: var(--azul); }
 .buscador button { border: 0; background: none; color: var(--tinta); padding: .35rem .25rem; }
-
+ 
 /* ---------- Avisos ---------- */
 .aviso-exito { background: #FFF6CC; color: var(--tinta); border: 0; border-left: 6px solid var(--amarillo); border-radius: 0; }
 .aviso-error { background: #FDE7EA; color: #7C0A17; border: 0; border-left: 6px solid var(--rojo); border-radius: 0; }
-
+ 
 /* ---------- Historia de portada ---------- */
 .portada {
     display: grid;
@@ -134,7 +134,7 @@ h1, h2, h3, .titular {
 .portada-entradilla { font-size: 1.3rem; line-height: 1.45; max-width: 40ch; color: rgba(255, 255, 255, .92); }
 .portada-competiciones { font-style: italic; color: rgba(255, 255, 255, .78); max-width: 52ch; }
 .portada-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; margin-top: 1.5rem; }
-
+ 
 /* El bloque grafico: iniciales gigantes sobre amarillo con un corte rojo */
 .portada-arte {
     position: relative;
@@ -161,20 +161,20 @@ h1, h2, h3, .titular {
     font-family: var(--titular); font-weight: 800; font-size: 1rem;
     padding: .3rem .7rem;
 }
-
+ 
 @media (min-width: 992px) {
     .portada { grid-template-columns: 7fr 5fr; }
     .portada-texto { padding: 3.5rem 3rem 3rem; }
     .portada-arte { min-height: 100%; }
 }
-
+ 
 /* ---------- Mas clubes ---------- */
 .titulo-seccion { font-size: clamp(2rem, 4vw, 2.6rem); margin-bottom: 1.5rem; }
 .titulo-seccion::after {
     content: ""; display: block; width: 72px; height: 6px; margin-top: .6rem;
     background: var(--amarillo);
 }
-
+ 
 .nota {
     height: 100%;
     display: flex; flex-direction: column;
@@ -193,12 +193,12 @@ h1, h2, h3, .titular {
     display: flex; align-items: center; justify-content: space-between; gap: 1rem;
     border-top: 1px solid var(--linea);
 }
-
+ 
 /* ---------- Pagina en blanco ---------- */
 .en-blanco { background: var(--papel); margin-top: 2rem; padding: 3.5rem 2rem; border-top: 8px solid var(--amarillo); }
 .en-blanco h1 { font-size: clamp(3rem, 8vw, 5.5rem); font-stretch: 62%; margin-bottom: 1rem; }
 .en-blanco p { font-size: 1.25rem; max-width: 46ch; color: var(--gris); }
-
+ 
 /* ---------- Modal de plantilla ---------- */
 .modal-alineacion { border: 0; border-radius: 0; }
 .modal-alineacion .modal-header { background: var(--azul); color: #fff; border: 0; border-radius: 0; border-bottom: 6px solid var(--amarillo); }
@@ -213,38 +213,80 @@ h1, h2, h3, .titular {
 }
 .alineacion-nombre { flex: 1; font-size: 1.1rem; }
 .alineacion-posicion { font-size: .85rem; color: var(--gris); }
-
+ 
 /* ---------- Formulario (redaccion) ---------- */
 .redaccion { max-width: 880px; padding-top: 2rem; padding-bottom: 3rem; }
 .volver { color: var(--azul); font-weight: 600; text-decoration: none; }
 .volver:hover { text-decoration: underline; }
 .redaccion-titulo { font-size: clamp(3rem, 9vw, 5.5rem); font-stretch: 62%; margin: 1rem 0 .75rem; }
 .redaccion-entradilla { font-size: 1.25rem; color: var(--gris); max-width: 52ch; margin-bottom: 2rem; }
-
+ 
 .bloque { background: var(--papel); padding: 1.5rem; margin-bottom: 1.5rem; border-top: 4px solid var(--tinta); }
 .bloque-titulo { font-size: 2rem; margin-bottom: 1.1rem; }
-
+ 
 .form-label { font-weight: 600; font-size: .9rem; }
 .form-control, .form-select { border: 1px solid #B6C0D2; border-radius: 4px; }
 .form-control:focus, .form-select:focus { border-color: var(--azul); box-shadow: 0 0 0 .2rem rgba(0, 56, 147, .18); }
 .dorsal { font-weight: 800; text-align: center; }
-
+ 
 .fila-jugador { background: var(--fondo); border-left: 4px solid var(--amarillo); padding: .6rem; }
 .contador { font-weight: 700; color: var(--azul); }
 .nota-suave { color: var(--gris); font-style: italic; }
-
+ 
 .btn-ficha { border: 2px solid var(--azul); color: var(--azul); background: #fff; border-radius: 999px; font-weight: 600; }
 .btn-check:checked + .btn-ficha { background: var(--azul); color: #fff; }
 .btn-check:focus-visible + .btn-ficha { outline: 3px solid var(--rojo); outline-offset: 2px; }
-
+ 
 .redaccion-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
-
+ 
 /* ---------- Pie ---------- */
 .pie { background: var(--tinta); color: rgba(255, 255, 255, .75); margin-top: 3rem; }
 .pie-texto { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem 1.25rem; padding-top: 1.5rem; padding-bottom: 1.75rem; font-size: .95rem; }
 .pie-marca { font-family: var(--titular); font-stretch: 62%; font-weight: 900; font-size: 1.8rem; color: #fff; }
-
+ 
 @media (max-width: 575.98px) {
     .portada-entradilla { font-size: 1.15rem; }
     .nota-titulo { font-size: 1.8rem; }
+}
+ 
+/* ---------- Enlaces de edición ---------- */
+.enlace-claro {
+    color: #fff; font-family: var(--titular); font-weight: 600; font-size: .9rem;
+    text-decoration: underline; text-underline-offset: 3px;
+}
+.enlace-claro:hover { color: var(--amarillo); }
+.enlace-editar {
+    color: var(--azul); font-family: var(--titular); font-weight: 600; font-size: .9rem;
+    text-decoration: underline; text-underline-offset: 3px;
+}
+.enlace-editar:hover { color: var(--azul-hondo); }
+.nota-enlaces { display: flex; align-items: center; gap: 1rem; }
+ 
+/* ---------- Catálogos: asociaciones y competiciones ---------- */
+.catalogo { padding-top: 2rem; padding-bottom: 3rem; }
+.catalogo-titulo { font-size: clamp(3rem, 9vw, 5.5rem); font-stretch: 62%; margin-bottom: .75rem; }
+.catalogo-entradilla { font-size: 1.2rem; color: var(--gris); max-width: 56ch; margin-bottom: 2rem; }
+ 
+.indice { list-style: none; margin: 0; padding: 0; background: var(--papel); border-top: 4px solid var(--tinta); }
+.indice li {
+    display: grid; grid-template-columns: 5.5rem 1fr auto; gap: 1rem; align-items: center;
+    padding: 1.1rem 1.25rem; border-bottom: 1px solid var(--linea);
+}
+.indice li:last-child { border-bottom: 0; }
+.indice .indice-vacio { display: block; color: var(--gris); font-style: italic; }
+.indice-grande {
+    font-family: var(--titular); font-stretch: 62%; font-weight: 900;
+    font-size: 2.1rem; line-height: 1; color: var(--azul);
+}
+.indice-nombre { font-family: var(--titular); font-weight: 800; font-size: 1.15rem; margin: 0 0 .15rem; }
+.indice-meta { margin: 0; color: var(--gris); font-style: italic; }
+.indice-acciones { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .5rem 1rem; }
+.etiqueta-conteo {
+    font-family: var(--titular); font-weight: 700; font-size: .85rem;
+    background: var(--amarillo); color: var(--tinta); padding: .15rem .55rem;
+}
+ 
+@media (max-width: 575.98px) {
+    .indice li { grid-template-columns: 1fr; gap: .5rem; }
+    .indice-acciones { justify-content: flex-start; }
 }

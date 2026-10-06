@@ -10,4 +10,9 @@ import java.util.List;
 public interface AsociacionRepositorio extends MongoRepository<Asociacion, String> {
  
     List<Asociacion> findAllByOrderByNombreAsc();
+ 
+    boolean existsBySiglasIgnoreCase(String siglas);
+ 
+    // Para editar: verifica que las siglas no las use OTRA asociación
+    boolean existsBySiglasIgnoreCaseAndIdNot(String siglas, String id);
 }

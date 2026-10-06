@@ -3,7 +3,7 @@
 <head th:replace="~{base :: head('Portada')}"></head>
 <body>
 <header th:replace="~{base :: cabecera}"></header>
-
+ 
 <!-- ===== Linea de edicion + buscador ===== -->
 <section class="edicion">
     <div class="container edicion-fila">
@@ -20,11 +20,11 @@
         </form>
     </div>
 </section>
-
+ 
 <div th:replace="~{base :: avisos}"></div>
-
+ 
 <main class="container pb-5">
-
+ 
     <!-- ===== Pagina en blanco ===== -->
     <section th:if="${#lists.isEmpty(clubes)}" class="en-blanco">
         <th:block th:if="${#strings.isEmpty(q)}">
@@ -38,9 +38,9 @@
             <a th:href="@{/clubes}" class="btn btn-azul btn-lg">Ver todos los clubes</a>
         </th:block>
     </section>
-
+ 
     <th:block th:unless="${#lists.isEmpty(clubes)}" th:with="portada=${clubes[0]}">
-
+ 
         <!-- ===== Historia de portada: el primer club ===== -->
         <article class="portada">
             <div class="portada-texto">
@@ -60,6 +60,7 @@
                 <div class="portada-acciones">
                     <button type="button" class="btn btn-amarillo" data-bs-toggle="modal"
                             th:attr="data-bs-target='#alineacion-' + ${portada.id}">Ver plantilla</button>
+                    <a th:href="@{/clubes/{id}/editar(id=${portada.id})}" class="enlace-claro">Editar club</a>
                     <form th:action="@{/clubes/{id}/eliminar(id=${portada.id})}" method="post"
                           onsubmit="return confirm('¿Eliminar este club y su plantilla? No se puede deshacer.');">
                         <button type="submit" class="enlace-eliminar enlace-eliminar-claro">Eliminar club</button>
@@ -72,7 +73,7 @@
                       th:text="${portada.asociacion.siglas}">FCF</span>
             </div>
         </article>
-
+ 
         <!-- ===== Resto de clubes ===== -->
         <section th:if="${#lists.size(clubes) > 1}" class="mt-5">
             <h2 class="titulo-seccion">Más clubes en esta edición</h2>
@@ -92,16 +93,19 @@
                         <div class="nota-acciones">
                             <button type="button" class="btn btn-azul btn-sm" data-bs-toggle="modal"
                                     th:attr="data-bs-target='#alineacion-' + ${club.id}">Ver plantilla</button>
-                            <form th:action="@{/clubes/{id}/eliminar(id=${club.id})}" method="post"
-                                  onsubmit="return confirm('¿Eliminar este club y su plantilla? No se puede deshacer.');">
-                                <button type="submit" class="enlace-eliminar">Eliminar</button>
-                            </form>
+                            <div class="nota-enlaces">
+                                <a th:href="@{/clubes/{id}/editar(id=${club.id})}" class="enlace-editar">Editar</a>
+                                <form th:action="@{/clubes/{id}/eliminar(id=${club.id})}" method="post"
+                                      onsubmit="return confirm('¿Eliminar este club y su plantilla? No se puede deshacer.');">
+                                    <button type="submit" class="enlace-eliminar">Eliminar</button>
+                                </form>
+                            </div>
                         </div>
                     </article>
                 </div>
             </div>
         </section>
-
+ 
         <!-- ===== Modales con la alineacion de cada club ===== -->
         <div class="modal fade" th:each="club : ${clubes}" th:id="'alineacion-' + ${club.id}"
              tabindex="-1" aria-hidden="true" th:attr="aria-labelledby='titulo-' + ${club.id}">
@@ -126,7 +130,7 @@
         </div>
     </th:block>
 </main>
-
+ 
 <footer th:replace="~{base :: pie}"></footer>
 <th:block th:replace="~{base :: scripts}"></th:block>
 </body>

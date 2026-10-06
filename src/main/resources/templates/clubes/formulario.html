@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{base :: head('Registrar club')}"></head>
+<head th:replace="~{base :: head(${club.id == null ? 'Registrar club' : 'Editar club'})}"></head>
 <body>
 <header th:replace="~{base :: cabecera}"></header>
-
+ 
 <main class="container redaccion">
     <a th:href="@{/clubes}" class="volver"><i class="bi bi-arrow-left" aria-hidden="true"></i> Volver a la portada</a>
-    <h1 class="redaccion-titulo">Nuevo club</h1>
-    <p class="redaccion-entradilla">Completa la ficha del club. Los campos de plantilla y competiciones puedes dejarlos para después.</p>
-
-    <form th:action="@{/clubes/guardar}" th:object="${club}" method="post" novalidate>
-
+    <h1 class="redaccion-titulo" th:text="${club.id == null ? 'Nuevo club' : 'Editar club'}">Nuevo club</h1>
+    <p class="redaccion-entradilla" th:text="${club.id == null ? 'Completa la ficha del club. Los campos de plantilla y competiciones puedes dejarlos para después.' : 'Modifica la ficha del club. Los cambios se guardan sobre el mismo registro.'}">Completa la ficha del club.</p>
+ 
+    <form th:action="${club.id == null} ? @{/clubes/guardar} : @{/clubes/{id}/actualizar(id=${club.id})}"
+          th:object="${club}" method="post" novalidate>
+ 
         <div th:if="${#fields.hasAnyErrors()}" class="alert aviso-error" role="alert">
             Hay campos por corregir. Están marcados en rojo.
         </div>
-
+        <div th:if="${#fields.hasGlobalErrors()}" class="text-danger mb-3" th:errors="*{global}"></div>
+ 
         <!-- ===== Club ===== -->
         <section class="bloque">
             <h2 class="bloque-titulo">El club</h2>
@@ -44,7 +46,7 @@
                 </div>
             </div>
         </section>
-
+ 
         <!-- ===== Entrenador (embebido 1:1) ===== -->
         <section class="bloque">
             <h2 class="bloque-titulo">El entrenador</h2>
@@ -71,16 +73,16 @@
                 </div>
             </div>
         </section>
-
+ 
         <!-- ===== Plantilla (embebida 1:N) ===== -->
         <section class="bloque">
             <div class="d-flex flex-wrap justify-content-between align-items-baseline gap-2">
                 <h2 class="bloque-titulo">La plantilla</h2>
                 <span class="contador"><span id="cuentaJugadores">0</span> de 26 jugadores</span>
             </div>
-
+ 
             <div th:if="${#fields.hasErrors('jugadores')}" class="text-danger small mb-2" th:errors="*{jugadores}"></div>
-
+ 
             <div id="plantilla" class="vstack gap-2">
                 <div class="fila-jugador" th:each="j, st : *{jugadores}">
                     <div class="row g-2 align-items-start">
@@ -115,14 +117,14 @@
                     </div>
                 </div>
             </div>
-
+ 
             <p id="plantillaVacia" class="nota-suave my-2">Todavía no hay jugadores en la plantilla.</p>
-
+ 
             <button type="button" id="agregarJugador" class="btn btn-borde mt-2">
                 <i class="bi bi-plus-lg" aria-hidden="true"></i> Agregar jugador
             </button>
         </section>
-
+ 
         <!-- ===== Competiciones (referencia N:N) ===== -->
         <section class="bloque">
             <h2 class="bloque-titulo">Competiciones</h2>
@@ -137,14 +139,14 @@
             </div>
             <div class="text-danger small mt-2" th:if="${#fields.hasErrors('competiciones')}" th:errors="*{competiciones}"></div>
         </section>
-
+ 
         <div class="redaccion-acciones">
-            <button type="submit" class="btn btn-azul btn-lg">Guardar club</button>
+            <button type="submit" class="btn btn-azul btn-lg" th:text="${club.id == null ? 'Guardar club' : 'Guardar cambios'}">Guardar club</button>
             <a th:href="@{/clubes}" class="volver">Cancelar</a>
         </div>
     </form>
 </main>
-
+ 
 <!-- Fila nueva de jugador (el JavaScript la copia y ajusta los indices) -->
 <template id="filaJugadorTpl">
     <div class="fila-jugador">
@@ -174,10 +176,10 @@
         </div>
     </div>
 </template>
-
+ 
 <footer th:replace="~{base :: pie}"></footer>
 <th:block th:replace="~{base :: scripts}"></th:block>
-
+ 
 <script>
     (() => {
         const MAXIMO = 26;
@@ -186,7 +188,7 @@
         const botonAgregar = document.getElementById('agregarJugador');
         const mensajeVacio = document.getElementById('plantillaVacia');
         const contador = document.getElementById('cuentaJugadores');
-
+ 
         // Spring necesita indices seguidos: jugadores[0], jugadores[1], ...
         function ordenarIndices() {
             const filas = lista.querySelectorAll('.fila-jugador');
@@ -200,20 +202,20 @@
             mensajeVacio.hidden = filas.length > 0;
             botonAgregar.disabled = filas.length >= MAXIMO;
         }
-
+ 
         botonAgregar.addEventListener('click', () => {
             lista.appendChild(molde.content.cloneNode(true));
             ordenarIndices();
             lista.lastElementChild.querySelector('input').focus();
         });
-
+ 
         lista.addEventListener('click', evento => {
             const boton = evento.target.closest('[data-quitar]');
             if (!boton) return;
             boton.closest('.fila-jugador').remove();
             ordenarIndices();
         });
-
+ 
         ordenarIndices();
     })();
 </script>

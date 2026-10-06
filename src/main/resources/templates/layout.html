@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<!--
+  Biblioteca de fragmentos reutilizables. Cada página los incluye con:
+  <head th:replace="~{layout :: head('Título')}"></head>
+-->
+<head th:fragment="head(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo} + ' · Gestión Mundial'">Gestión Mundial</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link th:href="@{/css/mundial.css}" rel="stylesheet">
+</head>
+<body>
+
+<!-- ===== Barra de navegación ===== -->
+<nav th:fragment="navbar" class="navbar navbar-expand-md navbar-dark nav-estadio sticky-top">
+    <div class="container">
+        <a class="navbar-brand marca" th:href="@{/}">
+            <i class="bi bi-trophy-fill marca-icono" aria-hidden="true"></i>
+            Gestión Mundial
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                data-bs-target="#menuPrincipal" aria-controls="menuPrincipal"
+                aria-expanded="false" aria-label="Abrir menú">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="menuPrincipal">
+            <ul class="navbar-nav ms-auto align-items-md-center gap-md-1">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/clubes}"
+                       th:classappend="${seccion == 'clubes'} ? 'active'">Álbum de clubes</a>
+                </li>
+                <li class="nav-item ms-md-2 mt-2 mt-md-0">
+                    <a class="btn btn-dorado" th:href="@{/clubes/nuevo}">
+                        <i class="bi bi-plus-lg" aria-hidden="true"></i> Registrar club
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== Mensajes flash ===== -->
+<div th:fragment="alertas" class="container">
+    <div th:if="${exito}" class="alert alerta-exito alert-dismissible fade show mt-4" role="status">
+        <i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i>
+        <span th:text="${exito}">Guardado</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+</div>
+
+<!-- ===== Pie de página ===== -->
+<footer th:fragment="footer" class="pie-estadio">
+    <div class="container">
+
+    </div>
+</footer>
+
+<!-- ===== Scripts ===== -->
+<th:block th:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</th:block>
+
+</body>
+</html>

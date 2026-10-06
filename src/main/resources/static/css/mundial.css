@@ -1,0 +1,295 @@
+/* =========================================================
+   Gestión Mundial · tema "álbum de láminas en la cancha"
+   ========================================================= */
+:root {
+    --grama: #1D6B3A;
+    --grama-oscura: #0E3B22;
+    --grama-noche: #0A2618;
+    --tiza: #F7F9F5;
+    --fondo: #E8EEE8;
+    --tinta: #14231A;
+    --dorado: #E3B23C;
+    --dorado-oscuro: #C4952A;
+    --roja: #C8102E;
+ 
+    --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+    --font-texto: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+ 
+    --bs-body-font-family: var(--font-texto);
+    --bs-body-color: var(--tinta);
+    --bs-body-bg: var(--fondo);
+    --bs-link-color-rgb: 29, 107, 58;
+    --bs-link-hover-color-rgb: 14, 59, 34;
+}
+ 
+body { background: var(--fondo); color: var(--tinta); font-family: var(--font-texto); }
+ 
+h1, h2, h3, h4, h5, .font-display { font-family: var(--font-display); letter-spacing: .01em; }
+ 
+:focus-visible { outline: 3px solid var(--dorado); outline-offset: 2px; }
+ 
+/* ---------- Navegación ---------- */
+.nav-estadio { background: var(--grama-noche); border-bottom: 3px solid var(--dorado); }
+.marca { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; display: flex; align-items: center; gap: .5rem; }
+.marca-icono { color: var(--dorado); }
+.nav-estadio .nav-link { font-weight: 500; }
+.nav-estadio .nav-link.active { color: var(--dorado) !important; }
+ 
+/* ---------- Botones ---------- */
+.btn-dorado { background: var(--dorado); color: var(--tinta); font-weight: 600; border: 0; }
+.btn-dorado:hover, .btn-dorado:focus { background: var(--dorado-oscuro); color: var(--tinta); }
+ 
+.btn-cancha { background: var(--grama); color: #fff; font-weight: 600; border: 0; }
+.btn-cancha:hover, .btn-cancha:focus { background: var(--grama-oscura); color: #fff; }
+ 
+.btn-outline-cancha { border: 2px solid var(--grama); color: var(--grama); font-weight: 600; }
+.btn-outline-cancha:hover { background: var(--grama); color: #fff; }
+ 
+.btn-eliminar { color: var(--roja); border: 0; }
+.btn-eliminar:hover { background: rgba(200, 16, 46, .1); color: var(--roja); }
+ 
+.btn-quitar { color: #6b7a70; border: 0; padding: .375rem .5rem; }
+.btn-quitar:hover { color: var(--roja); }
+ 
+.enlace-suave { color: var(--grama); text-decoration: none; font-weight: 500; }
+.enlace-suave:hover { text-decoration: underline; color: var(--grama-oscura); }
+ 
+/* ---------- Hero: media cancha ---------- */
+.hero-cancha {
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+    padding: 4.5rem 0 3.5rem;
+    background:
+        linear-gradient(180deg, rgba(10, 38, 24, .3), rgba(10, 38, 24, .78)),
+        repeating-linear-gradient(90deg, #1D6B3A 0 90px, #186033 90px 180px);
+}
+/* Líneas de cal: borde del campo, línea media y círculo central */
+.cancha-lineas {
+    position: absolute;
+    inset: 1.25rem;
+    border: 2px solid rgba(255, 255, 255, .28);
+    pointer-events: none;
+}
+.cancha-lineas::before {
+    content: "";
+    position: absolute; top: 0; bottom: 0; left: 64%;
+    border-left: 2px solid rgba(255, 255, 255, .28);
+}
+.cancha-lineas::after {
+    content: "";
+    position: absolute; top: 50%; left: 64%;
+    width: 220px; height: 220px;
+    transform: translate(-50%, -50%);
+    border: 2px solid rgba(255, 255, 255, .28);
+    border-radius: 50%;
+}
+.hero-titulo {
+    font-weight: 800;
+    font-size: clamp(2.6rem, 6vw, 4.5rem);
+    line-height: .95;
+    max-width: 14ch;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, .25);
+}
+.hero-texto { font-size: 1.125rem; max-width: 46ch; color: rgba(255, 255, 255, .85); margin-bottom: 1.75rem; }
+ 
+.buscador {
+    display: flex; align-items: center; gap: .5rem;
+    background: #fff; border-radius: 999px;
+    padding: .35rem .35rem .35rem 1.1rem;
+    max-width: 520px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+}
+.buscador .bi-search { color: #6b7a70; }
+.buscador .form-control { border: 0; box-shadow: none; padding-left: .25rem; }
+.buscador .btn { border-radius: 999px; padding-inline: 1.25rem; }
+ 
+/* Marcador del estadio */
+.marcador {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: #061A10;
+    border: 3px solid #23402F;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 3px #0B2A1A, 0 14px 30px rgba(0, 0, 0, .35);
+}
+.marcador-celda {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 1rem .5rem .85rem;
+}
+.marcador-celda + .marcador-celda { border-left: 2px solid #1B3526; }
+.marcador-valor {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    line-height: 1;
+    color: var(--dorado);
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 14px rgba(227, 178, 60, .45);
+}
+.marcador-rotulo { font-size: .85rem; color: rgba(255, 255, 255, .7); margin-top: .35rem; }
+ 
+/* ---------- Secciones ---------- */
+.titulo-seccion { font-weight: 800; font-size: 2rem; }
+.titulo-pagina { font-weight: 800; font-size: clamp(2.2rem, 5vw, 3rem); margin-bottom: .25rem; }
+ 
+.alerta-exito { background: #DDEFE2; color: var(--grama-oscura); border: 0; border-left: 5px solid var(--grama); }
+.alerta-error { background: #F9E1E5; color: #7A0A1C; border: 0; border-left: 5px solid var(--roja); }
+ 
+/* ---------- Lámina (tarjeta de club) ---------- */
+.lamina {
+    --color-club: hsl(var(--hue, 140) 55% 36%);
+    display: flex; flex-direction: column;
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(20, 35, 26, .1);
+    box-shadow: 0 1px 2px rgba(20, 35, 26, .06);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+.lamina:hover, .lamina:focus-within {
+    transform: translateY(-5px) rotate(-.6deg);
+    box-shadow: 0 16px 32px rgba(20, 35, 26, .16);
+}
+.lamina-franja {
+    height: 70px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: .6rem .85rem;
+    background:
+        repeating-linear-gradient(135deg, rgba(255, 255, 255, .09) 0 10px, transparent 10px 20px),
+        var(--color-club);
+    color: #fff;
+}
+.lamina-numero { font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; opacity: .85; }
+.lamina-asociacion {
+    background: rgba(255, 255, 255, .95); color: var(--tinta);
+    font-weight: 600; font-size: .8rem;
+    padding: .15rem .55rem; border-radius: 999px;
+}
+.lamina-cuerpo { padding: 0 1.15rem 1rem; flex: 1; }
+.escudo {
+    width: 76px; height: 76px;
+    margin-top: -38px; margin-bottom: .6rem;
+    display: grid; place-items: center;
+    background: #fff;
+    border: 4px solid var(--color-club);
+    border-radius: 50%;
+    font-family: var(--font-display); font-weight: 800; font-size: 1.85rem;
+    color: var(--color-club);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .12);
+}
+.lamina-nombre { font-weight: 800; font-size: 1.65rem; line-height: 1.05; margin-bottom: .2rem; }
+.lamina-pais { color: #5d6b62; margin-bottom: .85rem; }
+ 
+.lamina-datos { display: grid; grid-template-columns: 1fr auto; gap: .75rem; margin-bottom: .85rem; }
+.lamina-datos dt { font-weight: 500; font-size: .8rem; color: #6b7a70; }
+.lamina-datos dd { margin: 0; font-weight: 600; }
+ 
+.chips { display: flex; flex-wrap: wrap; gap: .35rem; }
+.chip {
+    font-size: .78rem; font-weight: 500;
+    background: #EEF3EE; color: var(--grama-oscura);
+    padding: .2rem .6rem; border-radius: 999px;
+}
+ 
+/* Borde perforado, como el troquel de una lámina */
+.lamina-pie {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: .75rem 1.15rem;
+    border-top: 2px dashed rgba(20, 35, 26, .14);
+}
+ 
+/* ---------- Modal de plantilla ---------- */
+.modal-lamina { border: 0; border-radius: 14px; overflow: hidden; }
+.modal-lamina .modal-header {
+    background: hsl(var(--hue, 140) 55% 36%);
+    color: #fff; border: 0;
+}
+.modal-lamina .modal-title { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; }
+.lista-plantilla { list-style: none; padding: 0; margin: 0; }
+.lista-plantilla li {
+    display: flex; align-items: center; gap: .85rem;
+    padding: .55rem 0;
+    border-bottom: 1px solid #EDF1ED;
+}
+.lista-plantilla li:last-child { border-bottom: 0; }
+.dorsal-camiseta {
+    min-width: 2.4rem; height: 2.4rem;
+    display: grid; place-items: center;
+    background: hsl(var(--hue, 140) 55% 36%); color: #fff;
+    border-radius: 8px 8px 12px 12px;
+    font-family: var(--font-display); font-weight: 800; font-size: 1.15rem;
+}
+.posicion { font-size: .85rem; color: #5d6b62; }
+ 
+/* ---------- Estado vacío ---------- */
+.vacio {
+    text-align: center;
+    background: #fff;
+    border: 2px dashed rgba(20, 35, 26, .18);
+    border-radius: 14px;
+    padding: 3.5rem 1.5rem;
+}
+.vacio .bi { font-size: 2.5rem; color: var(--grama); }
+.vacio h3 { font-weight: 800; margin-top: .75rem; }
+.vacio p { color: #5d6b62; }
+ 
+/* ---------- Formulario ---------- */
+.panel {
+    background: #fff;
+    border-radius: 14px;
+    padding: 1.5rem;
+    border: 1px solid rgba(20, 35, 26, .08);
+}
+.panel-titulo {
+    font-weight: 800; font-size: 1.45rem;
+    display: flex; align-items: center; gap: .5rem;
+    margin-bottom: 1rem;
+}
+.panel-titulo .bi { color: var(--grama); font-size: 1.15rem; }
+ 
+.form-control:focus, .form-select:focus {
+    border-color: var(--grama);
+    box-shadow: 0 0 0 .2rem rgba(29, 107, 58, .2);
+}
+.form-label { font-weight: 500; }
+.dorsal { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; text-align: center; }
+ 
+.fila-jugador { background: #F4F7F4; border-radius: 10px; padding: .6rem; }
+.contador { font-weight: 600; color: var(--grama); }
+ 
+.btn-chip {
+    border: 2px solid #CFDACF; border-radius: 999px;
+    font-weight: 500; font-size: .9rem;
+    color: var(--tinta); background: #fff;
+}
+.btn-check:checked + .btn-chip { background: var(--grama); border-color: var(--grama); color: #fff; }
+.btn-check:focus-visible + .btn-chip { outline: 3px solid var(--dorado); outline-offset: 2px; }
+ 
+@media (min-width: 992px) {
+    .lateral-fija { position: sticky; top: 90px; }
+}
+ 
+/* ---------- Pie ---------- */
+.pie-estadio {
+    background: var(--grama-noche);
+    color: rgba(255, 255, 255, .7);
+    padding: 1.5rem 0;
+    margin-top: 2rem;
+    font-size: .9rem;
+}
+.pie-estadio a { color: var(--dorado); text-decoration: none; }
+ 
+/* ---------- Responsivo ---------- */
+@media (max-width: 767.98px) {
+    .hero-cancha { padding: 3rem 0 2.5rem; }
+    .cancha-lineas::before { top: 62%; bottom: auto; left: 0; right: 0; border-left: 0; border-top: 2px solid rgba(255, 255, 255, .22); }
+    .cancha-lineas::after { left: 50%; top: 62%; width: 140px; height: 140px; }
+    .buscador .btn { padding-inline: .9rem; }
+    .marcador-rotulo { font-size: .75rem; }
+}
+ 
+@media (prefers-reduced-motion: reduce) {
+    .lamina, .lamina:hover, .lamina:focus-within { transition: none; transform: none; }
+}

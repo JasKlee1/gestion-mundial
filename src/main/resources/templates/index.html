@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{base :: head('Portada')}"></head>
+<body>
+<header th:replace="~{base :: cabecera}"></header>
+
+<!-- ===== Linea de edicion + buscador ===== -->
+<section class="edicion">
+    <div class="container edicion-fila">
+        <p class="edicion-texto">
+            Edición Mundial 2026. En este número:
+            <strong th:text="${#lists.size(clubes) == 1} ? '1 club' : (${#lists.size(clubes)} + ' clubes')">3 clubes</strong>,
+            <strong th:text="${totalJugadores == 1} ? '1 jugador' : (${totalJugadores} + ' jugadores')">34 jugadores</strong> y
+            <strong th:text="${totalCompeticiones == 1} ? '1 competición' : (${totalCompeticiones} + ' competiciones')">4 competiciones</strong>.
+        </p>
+        <form class="buscador" th:action="@{/clubes}" method="get" role="search">
+            <label for="q" class="visually-hidden">Buscar un club</label>
+            <input id="q" type="search" name="q" th:value="${q}" placeholder="Buscar un club">
+            <button type="submit" aria-label="Buscar"><i class="bi bi-search" aria-hidden="true"></i></button>
+        </form>
+    </div>
+</section>
+
+<div th:replace="~{base :: avisos}"></div>
+
+<main class="container pb-5">
+
+    <!-- ===== Pagina en blanco ===== -->
+    <section th:if="${#lists.isEmpty(clubes)}" class="en-blanco">
+        <th:block th:if="${#strings.isEmpty(q)}">
+            <h1>Página en blanco</h1>
+            <p>Esta edición todavía no tiene clubes. Registra el primero y será la historia de portada.</p>
+            <a th:href="@{/clubes/nuevo}" class="btn btn-azul btn-lg">Registrar club</a>
+        </th:block>
+        <th:block th:unless="${#strings.isEmpty(q)}">
+            <h1>Sin resultados</h1>
+            <p>Ningún club coincide con “<span th:text="${q}">texto</span>”. Prueba con menos letras.</p>
+            <a th:href="@{/clubes}" class="btn btn-azul btn-lg">Ver todos los clubes</a>
+        </th:block>
+    </section>
+
+    <th:block th:unless="${#lists.isEmpty(clubes)}" th:with="portada=${clubes[0]}">
+
+        <!-- ===== Historia de portada: el primer club ===== -->
+        <article class="portada">
+            <div class="portada-texto">
+                <p class="antetitulo antetitulo-claro"
+                   th:text="${#strings.isEmpty(q)} ? 'Historia de portada' : ('Resultados para “' + ${q} + '”')">Historia de portada</p>
+                <h1 class="portada-titulo" th:text="${portada.nombre}">Atlético Bucaramanga</h1>
+                <p class="portada-entradilla">
+                    Dirigido por <span th:text="${portada.entrenador?.nombreCompleto}">Nombre Apellido</span>,
+                    el club de <span th:text="${portada.pais}">Colombia</span> llega con
+                    <span th:text="${#lists.size(portada.jugadores) == 1} ? '1 jugador' : (${#lists.size(portada.jugadores)} + ' jugadores')">11 jugadores</span>
+                    en su plantilla.
+                </p>
+                <p class="portada-competiciones" th:unless="${#lists.isEmpty(portada.competiciones)}">
+                    Compite en
+                    <th:block th:each="c, it : ${portada.competiciones}"><span th:text="${c.nombre}">Copa</span><th:block th:text="${it.last} ? '.' : ', '">.</th:block></th:block>
+                </p>
+                <div class="portada-acciones">
+                    <button type="button" class="btn btn-amarillo" data-bs-toggle="modal"
+                            th:attr="data-bs-target='#alineacion-' + ${portada.id}">Ver plantilla</button>
+                    <form th:action="@{/clubes/{id}/eliminar(id=${portada.id})}" method="post"
+                          onsubmit="return confirm('¿Eliminar este club y su plantilla? No se puede deshacer.');">
+                        <button type="submit" class="enlace-eliminar enlace-eliminar-claro">Eliminar club</button>
+                    </form>
+                </div>
+            </div>
+            <div class="portada-arte" aria-hidden="true">
+                <span class="portada-iniciales" th:text="${portada.iniciales}">AB</span>
+                <span class="portada-siglas" th:if="${portada.asociacion != null}"
+                      th:text="${portada.asociacion.siglas}">FCF</span>
+            </div>
+        </article>
+
+        <!-- ===== Resto de clubes ===== -->
+        <section th:if="${#lists.size(clubes) > 1}" class="mt-5">
+            <h2 class="titulo-seccion">Más clubes en esta edición</h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+                <div class="col" th:each="club, st : ${clubes}" th:unless="${st.first}">
+                    <article class="nota" th:classappend="'nota-c' + ${st.index % 3}">
+                        <p class="antetitulo" th:text="${club.asociacion != null} ? ${club.asociacion.nombre} : 'Sin asociación'">Federación</p>
+                        <h3 class="nota-titulo" th:text="${club.nombre}">Club</h3>
+                        <p class="nota-entradilla">
+                            Dirigido por <span th:text="${club.entrenador?.nombreCompleto}">Nombre</span>.
+                            <span th:text="${#lists.size(club.jugadores) == 1} ? '1 jugador' : (${#lists.size(club.jugadores)} + ' jugadores')">0 jugadores</span>
+                            en plantilla.
+                        </p>
+                        <p class="nota-competiciones" th:unless="${#lists.isEmpty(club.competiciones)}">
+                            <th:block th:each="c, it : ${club.competiciones}"><span th:text="${c.nombre}">Copa</span><th:block th:unless="${it.last}">, </th:block></th:block>
+                        </p>
+                        <div class="nota-acciones">
+                            <button type="button" class="btn btn-azul btn-sm" data-bs-toggle="modal"
+                                    th:attr="data-bs-target='#alineacion-' + ${club.id}">Ver plantilla</button>
+                            <form th:action="@{/clubes/{id}/eliminar(id=${club.id})}" method="post"
+                                  onsubmit="return confirm('¿Eliminar este club y su plantilla? No se puede deshacer.');">
+                                <button type="submit" class="enlace-eliminar">Eliminar</button>
+                            </form>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Modales con la alineacion de cada club ===== -->
+        <div class="modal fade" th:each="club : ${clubes}" th:id="'alineacion-' + ${club.id}"
+             tabindex="-1" aria-hidden="true" th:attr="aria-labelledby='titulo-' + ${club.id}">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content modal-alineacion">
+                    <div class="modal-header">
+                        <h2 class="modal-title" th:id="'titulo-' + ${club.id}" th:text="'Plantilla de ' + ${club.nombre}">Plantilla</h2>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p th:if="${#lists.isEmpty(club.jugadores)}" class="mb-0">Este club todavía no tiene jugadores registrados.</p>
+                        <ol class="alineacion" th:unless="${#lists.isEmpty(club.jugadores)}">
+                            <li th:each="j : ${club.jugadores}">
+                                <span class="alineacion-dorsal" th:text="${j.numero}">10</span>
+                                <span class="alineacion-nombre" th:text="${j.nombre + ' ' + j.apellido}">Jugador</span>
+                                <span class="alineacion-posicion" th:text="${j.posicion?.etiqueta}">Delantero</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+</main>
+
+<footer th:replace="~{base :: pie}"></footer>
+<th:block th:replace="~{base :: scripts}"></th:block>
+</body>
+</html>
